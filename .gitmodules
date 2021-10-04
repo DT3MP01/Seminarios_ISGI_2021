@@ -1,0 +1,4 @@
+[submodule "codebase"]
+	path = codebase
+	url = https://robvivo@github.com/RobVivo/codebase.git
+	branch = master

@@ -34,3 +34,7 @@
 
 # Visual
 .vs/*
+*.tlog
+*.iobj
+*.ipdb
+*.log

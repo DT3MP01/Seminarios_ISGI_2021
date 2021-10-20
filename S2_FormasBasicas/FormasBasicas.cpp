@@ -13,7 +13,7 @@
 #define PROYECTO "ISGI::S2E01::Formas Basicas"
 
 #include <iostream>			
-#include <gl/freeglut.h>
+#include <freeglut.h>
 
 using namespace std;
 

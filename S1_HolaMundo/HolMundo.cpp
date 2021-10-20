@@ -12,7 +12,7 @@
 #define PROYECTO "ISGI::S1E01::Hola OpenGL"
 
 #include <iostream>			
-#include <gl/freeglut.h>
+#include <freeglut.h>
 
 using namespace std;
 
@@ -50,7 +50,7 @@ int main(int argc, char** argv)
 	// Registro de callbacks	
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
-
+	
 	// Bucle de atencion a eventos
 	glutMainLoop();
 }

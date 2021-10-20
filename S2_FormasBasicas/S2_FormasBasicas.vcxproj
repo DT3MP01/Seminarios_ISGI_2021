@@ -75,6 +75,9 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
+    <OutDir>$(ProjectDir)</OutDir>
+    <IncludePath>C:\Users\alber\source\repos\Seminarios_ISGI_2021\codebase\GL;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\alber\source\repos\Seminarios_ISGI_2021\codebase\lib;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>

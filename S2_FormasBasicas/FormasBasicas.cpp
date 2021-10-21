@@ -14,10 +14,11 @@
 
 #include <iostream>			
 #include <freeglut.h>
-
+#define _USE_MATH_DEFINES
+#include <math.h>
 using namespace std;
 
-GLuint cuadradito, esfera;
+GLuint estrellaDavid, esfera;
 
 //! Inicializaciones
 void init()
@@ -25,33 +26,34 @@ void init()
 	cout << "Iniciando " << PROYECTO << endl;
 	cout << "GL version " << glGetString(GL_VERSION) << endl;
 
-	glClearColor(0.0f, 0.0f, 0.3f, 1.0f);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Display List
-	cuadradito = glGenLists(1);
+	estrellaDavid = glGenLists(1);
 
-	glNewList(cuadradito, GL_COMPILE);
+	glNewList(estrellaDavid, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
 
-	glPointSize(10);
-	glBegin(GL_POLYGON);
-	glColor3f(1, 0, 0);
-	glVertex3f(-0.5, -0.5, 0);
-	glColor3f(0, 0, 1);
-	glVertex3f(0.5, -0.5, 0);
-	glColor3f(0, 1, 0);
-	glVertex3f(0.5, 0.5, 0);
-	glColor3f(1, 1, 1);
-	glVertex3f(-0.5, 0.5, 0);
+	glBegin(GL_TRIANGLE_STRIP);
+	for (int i = 0; i < 4; i++) {
+		double angle = (1.0 + (i * 4) % 12) * M_PI / 6;
+		glVertex3f(1.0 * cos(angle), 1.0 * sin(angle), 0.0);
+		glVertex3f(0.7 * cos(angle), 0.7 * sin(angle), 0.0);
+	}
+	glEnd();
+
+	glBegin(GL_TRIANGLE_STRIP);
+	for (int i = 0; i < 4; i++) {
+		double angle = (3.0 + (i * 4) % 12) * M_PI / 6;
+		glVertex3f(1.0 * cos(angle), 1.0 * sin(angle), 0.0);
+		glVertex3f(0.7 * cos(angle), 0.7 * sin(angle), 0.0);
+	}
 	glEnd();
 
 	glPopAttrib();
 	glEndList();
 
-	esfera = glGenLists(1);
-	glNewList(esfera, GL_COMPILE);
-	glutWireSphere(1, 20, 20);
-	glCallList(cuadradito);
+	glCallList(estrellaDavid);
 	glEndList();
 
 
@@ -61,10 +63,9 @@ void init()
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-
-	glColor3f(0, 1, 0);
-	glCallList(esfera);
-	glutWireTeapot(0.5);
+	
+	glColor3f(0, 0, 1);
+	glCallList(estrellaDavid);
 
 	glFlush();
 }

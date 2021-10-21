@@ -36,7 +36,7 @@ void init()
 
 	glBegin(GL_TRIANGLE_STRIP);
 	for (int i = 0; i < 4; i++) {
-		double angle = (1.0 + (i * 4) % 12) * M_PI / 6;
+		double angle = ((i * 2 )% 6) * M_PI / 3 + M_PI /2;
 		glVertex3f(1.0 * cos(angle), 1.0 * sin(angle), 0.0);
 		glVertex3f(0.7 * cos(angle), 0.7 * sin(angle), 0.0);
 	}
@@ -44,7 +44,7 @@ void init()
 
 	glBegin(GL_TRIANGLE_STRIP);
 	for (int i = 0; i < 4; i++) {
-		double angle = (3.0 + (i * 4) % 12) * M_PI / 6;
+		double angle = (((i * 2)+1) % 6) * M_PI / 3 + M_PI / 2;
 		glVertex3f(1.0 * cos(angle), 1.0 * sin(angle), 0.0);
 		glVertex3f(0.7 * cos(angle), 0.7 * sin(angle), 0.0);
 	}

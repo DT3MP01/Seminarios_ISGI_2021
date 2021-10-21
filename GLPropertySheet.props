@@ -3,8 +3,8 @@
   <ImportGroup Label="PropertySheets" />
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
-    <IncludePath>..\codebase\;C:\Users\alber\source\repos\Seminarios_ISGI_2021\codebase\GL;$(IncludePath)</IncludePath>
-    <LibraryPath>..\codebase\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;C:\Users\alber\source\repos\Seminarios_ISGI_2021\codebase\lib</LibraryPath>
+    <IncludePath>C:\Users\alber\source\Repos\DT3MP01\Seminarios_ISGI_2021\codebase\GL;..\codebase\;C:\Users\alber\source\repos\Seminarios_ISGI_2021\codebase\GL;$(IncludePath)</IncludePath>
+    <LibraryPath>C:\Users\alber\source\Repos\DT3MP01\Seminarios_ISGI_2021\codebase\lib;..\codebase\lib;$(VC_LibraryPath_x86);$(WindowsSDK_LibraryPath_x86);$(NETFXKitsDir)Lib\um\x86;C:\Users\alber\source\repos\Seminarios_ISGI_2021\codebase\lib</LibraryPath>
     <OutDir>$(ProjectDir)</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup />

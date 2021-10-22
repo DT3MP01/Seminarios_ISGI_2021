@@ -33,7 +33,6 @@ void init()
 
 	glNewList(estrellaDavid, GL_COMPILE);
 	glPushAttrib(GL_CURRENT_BIT);
-
 	glBegin(GL_TRIANGLE_STRIP);
 	for (int i = 0; i < 4; i++) {
 		double angle = ((i * 2 )% 6) * M_PI / 3 + M_PI /2;
@@ -41,7 +40,6 @@ void init()
 		glVertex3f(0.7 * cos(angle), 0.7 * sin(angle), 0.0);
 	}
 	glEnd();
-
 	glBegin(GL_TRIANGLE_STRIP);
 	for (int i = 0; i < 4; i++) {
 		double angle = (((i * 2)+1) % 6) * M_PI / 3 + M_PI / 2;
@@ -50,11 +48,12 @@ void init()
 	}
 	glEnd();
 
-	glPopAttrib();
+
+
 	glEndList();
 
-	glCallList(estrellaDavid);
-	glEndList();
+
+
 
 
 }
@@ -63,7 +62,6 @@ void init()
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	
 	glColor3f(0, 0, 1);
 	glCallList(estrellaDavid);
 

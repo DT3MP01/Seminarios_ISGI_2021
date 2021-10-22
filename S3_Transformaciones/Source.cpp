@@ -18,7 +18,7 @@
 #include <math.h>
 using namespace std;
 
-GLuint petalo, corola, flor;
+GLuint estrellaDavid, esfera;
 
 //! Inicializaciones
 void init()
@@ -26,54 +26,34 @@ void init()
 	cout << "Iniciando " << PROYECTO << endl;
 	cout << "GL version " << glGetString(GL_VERSION) << endl;
 
-	glClearColor(0.0f, 0.0f, 1.0f, 0.0f);
+	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Display List
-	petalo = glGenLists(1);
-	glNewList(petalo, GL_COMPILE);
-	glColor3f(1, 1, 1);
-	glPushMatrix();
-	glScalef(0.15, 0.5, 0.1);
-	glutSolidSphere(1, 20, 20);
-	glPopMatrix();
-	glEndList();
+	estrellaDavid = glGenLists(1);
 
-	corola = glGenLists(1);
-	glNewList(corola,GL_COMPILE);
-
-	for (auto i = 0; i < 12; i++) {
-		glPushMatrix();
-		glRotatef(30*i, 0, 0, 1);
-		glTranslatef(0, 0.25, 0);
-		glScalef(0.5, 0.5, 0.5);
-		glCallList(petalo);
-		glPopMatrix();
+	glNewList(estrellaDavid, GL_COMPILE);
+	glPushAttrib(GL_CURRENT_BIT);
+	glBegin(GL_TRIANGLE_STRIP);
+	for (int i = 0; i < 4; i++) {
+		double angle = ((i * 2) % 6) * M_PI / 3 + M_PI / 2;
+		glVertex3f(1.0 * cos(angle), 1.0 * sin(angle), 0.0);
+		glVertex3f(0.7 * cos(angle), 0.7 * sin(angle), 0.0);
 	}
-	glPushMatrix();
-	glColor3f(1, 1, 0);
-	glScalef(0.25, 0.25, 0.25);
-	glutSolidSphere(1, 20, 20);
-	glPopMatrix();
+	glEnd();
+	glBegin(GL_TRIANGLE_STRIP);
+	for (int i = 0; i < 4; i++) {
+		double angle = (((i * 2) + 1) % 6) * M_PI / 3 + M_PI / 2;
+		glVertex3f(1.0 * cos(angle), 1.0 * sin(angle), 0.0);
+		glVertex3f(0.7 * cos(angle), 0.7 * sin(angle), 0.0);
+	}
+	glEnd();
+
+
+
 	glEndList();
 
-	flor = glGenLists(1);
-	glNewList(flor, GL_COMPILE);
-	glPushMatrix();
-	glColor3f(0, 1, 0);
-	glScalef(0.1, 0.75, 0.1);
-	glTranslatef(0,- 0.375, 0);
-	glutSolidCube(1);
-	glPopMatrix();
 
-	glPushMatrix();
-	glRotatef(7, 0, 0, 1);
-	glTranslated(0, 0.25, 0);
-	glCallList(corola);
-	glPopMatrix();
-	
 
-	glScalef(0.5, 0.5, 0.5);
-	glEndList();
 
 
 }
@@ -82,18 +62,58 @@ void init()
 void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
-	glMatrixMode(GL_MODELVIEW);
-	glLoadIdentity();
 
-	for (int i = 0; i < 5; i++) {
-		glPushMatrix();
-		glTranslatef((rand() % 200 - 100) / 100, (rand() % 200 - 100) / 100, 0);
-		glScalef(0.3, 0.3, 0.3);
-		glPopMatrix;
-		glCallList(flor);
-		
+	glPushMatrix();
+	glScalef(0.5, 0.5, 0.5);
+	glTranslatef(-1, 1, 0);
+	glRotatef(15, 0, 0, 1);
+	glColor3f(0, 0, 1);
+	glCallList(estrellaDavid);
+	glPushMatrix();
+	glRotatef(30, 0, 0, 1);
+	glScalef(0.4, 0.4, 0.4);
+	glCallList(estrellaDavid);
+	glPopMatrix();
+	glPopMatrix();
 
-	}
+	glPushMatrix();
+	glScalef(0.5, 0.5, 0.5);
+	glTranslatef(1, 1, 0);
+	glRotatef(-15, 0, 0, 1);
+	glColor3f(0, 0, 1);
+	glCallList(estrellaDavid);
+	glPushMatrix();
+	glRotatef(30, 0, 0, 1);
+	glScalef(0.4, 0.4, 0.4);
+	glCallList(estrellaDavid);
+	glPopMatrix();
+	glPopMatrix();
+
+	glPushMatrix();
+	glScalef(0.5, 0.5, 0.5);
+	glTranslatef(-1, -1, 0);
+	glRotatef(-15, 0, 0, 1);
+	glColor3f(0, 0, 1);
+	glCallList(estrellaDavid);
+	glPushMatrix();
+	glRotatef(30, 0, 0, 1);
+	glScalef(0.4, 0.4, 0.4);
+	glCallList(estrellaDavid);
+	glPopMatrix();
+	glPopMatrix();
+
+	glPushMatrix();
+	glScalef(0.5, 0.5, 0.5);
+	glTranslatef(1, -1, 0);
+	glRotatef(15, 0, 0, 1);
+	glColor3f(0, 0, 1);
+	glCallList(estrellaDavid);
+	glPushMatrix();
+	glRotatef(30, 0, 0, 1);
+	glScalef(0.4, 0.4, 0.4);
+	glCallList(estrellaDavid);
+	glPopMatrix();
+	glPopMatrix();
 
 	glFlush();
 }

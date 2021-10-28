@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "S2_FormasBasicas", "S2_Form
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "S3_Transformaciones", "S3_Transformaciones\S3_Transformaciones.vcxproj", "{FE611AF8-7846-46E5-8E0D-C45C76BFBACF}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "S4_Camara", "S4_Camara\S4_Camara.vcxproj", "{74C6F03D-63BC-4520-A038-E6D7D87E1F5E}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x64 = Debug|x64
@@ -41,6 +43,14 @@ Global
 		{FE611AF8-7846-46E5-8E0D-C45C76BFBACF}.Release|x64.Build.0 = Release|x64
 		{FE611AF8-7846-46E5-8E0D-C45C76BFBACF}.Release|x86.ActiveCfg = Release|Win32
 		{FE611AF8-7846-46E5-8E0D-C45C76BFBACF}.Release|x86.Build.0 = Release|Win32
+		{74C6F03D-63BC-4520-A038-E6D7D87E1F5E}.Debug|x64.ActiveCfg = Debug|x64
+		{74C6F03D-63BC-4520-A038-E6D7D87E1F5E}.Debug|x64.Build.0 = Debug|x64
+		{74C6F03D-63BC-4520-A038-E6D7D87E1F5E}.Debug|x86.ActiveCfg = Debug|Win32
+		{74C6F03D-63BC-4520-A038-E6D7D87E1F5E}.Debug|x86.Build.0 = Debug|Win32
+		{74C6F03D-63BC-4520-A038-E6D7D87E1F5E}.Release|x64.ActiveCfg = Release|x64
+		{74C6F03D-63BC-4520-A038-E6D7D87E1F5E}.Release|x64.Build.0 = Release|x64
+		{74C6F03D-63BC-4520-A038-E6D7D87E1F5E}.Release|x86.ActiveCfg = Release|Win32
+		{74C6F03D-63BC-4520-A038-E6D7D87E1F5E}.Release|x86.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE

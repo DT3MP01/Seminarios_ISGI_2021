@@ -15,7 +15,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="Camara.cpp">
+    <ClCompile Include="Sem4.cpp">
       <Filter>Archivos de origen</Filter>
     </ClCompile>
   </ItemGroup>

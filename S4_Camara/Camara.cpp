@@ -63,8 +63,10 @@ void display()
 {
 	glClear(GL_COLOR_BUFFER_BIT);
 	glColor3f(0, 0, 1);
+	glPushMatrix();
+	glRotatef(30, 0, 1, 0);
 	glCallList(estrellaDavid);
-
+	glPopMatrix();
 	glFlush();
 }
 

@@ -18,7 +18,7 @@
 #include <math.h>
 using namespace std;
 
-GLuint estrellaDavid, esfera;
+GLuint estrellaDavid;
 
 //! Inicializaciones
 void init()

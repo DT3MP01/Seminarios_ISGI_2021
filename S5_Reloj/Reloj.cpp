@@ -1,19 +1,17 @@
 /***************************************************
 ISGI:: Reloj 3D
-Autor: Mario Campos Mocholí
+Autor: Luis Alberto Alvarez Zavaleta
 ***************************************************/
 
 constexpr auto TITULO = "Reloj 3D";
 #define _USE_MATH_DEFINES
 #define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
-#include <freeglut.h>
-#include <gl/GLU.h>
-#include <gl/GL.h>
+#include <gl/freeglut.h>
 #include <math.h>
 #include <ctime>
 #include <cmath>
-#include <chrono>
+
 
 // Angulos y variables de animación
 static float anguloSec;
@@ -256,7 +254,7 @@ int main(int argc, char** argv)
 	glutInitWindowSize(400, 400);											// Tamanyo inicial de la ventana
 	glutCreateWindow(TITULO);												// Creacion de la ventana con su titulo
 	init();																	// Inicializacion propia
-	std::cout << TITULO << " por Mario Campos Mocholi" << std::endl;		// Mensaje por consola
+	std::cout << TITULO << " por Luis Alberto Alvarez Zavaleta" << std::endl;		// Mensaje por consola
 	glutDisplayFunc(display);												// Alta de la funcion de atencion a display
 	glutReshapeFunc(reshape);												// Alta de la funcion de atencion a reshape
 	glutTimerFunc(1000 / 60, onTimer, 60);									// Se encola un nuevo timer

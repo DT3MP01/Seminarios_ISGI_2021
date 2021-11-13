@@ -1,24 +1,25 @@
 /*!
-	\file		FormasBasicas.cpp
-	\brief		Primitivas en Opengl
-
-	Programa para dibujar primitivas basicas usando *freeglut*,
-	OpenGl y listas de dibujo
-
+	\file		Animacion.cpp
+	\brief		Introduccion del tiempo en la escena
+	Programa para generar una animacion de dos objetos con y sin control
+	del tiempo transcurrido
 	\author		Roberto Vivo' <rvivo@upv.es>
 	\date		2016-2021
  */
 
 
-#define PROYECTO "ISGI::S2E01::Formas Basicas"
+#define PROYECTO "ISGI::S5E01::Animacion"
 
-#include <iostream>			
-#include <freeglut.h>
-#define _USE_MATH_DEFINES
-#include <math.h>
+#include <iostream>		
+#include <sstream>
+#include <gl/freeglut.h>
+
+static const int TASAFPS = 60;
+
+// Variables dependientes del tiempo
+static float angulo = 0;
+
 using namespace std;
-
-GLuint estrellaDavid;
 
 //! Inicializaciones
 void init()
@@ -26,74 +27,92 @@ void init()
 	cout << "Iniciando " << PROYECTO << endl;
 	cout << "GL version " << glGetString(GL_VERSION) << endl;
 
-	glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
-	glEnable(GL_DEPTH_TEST);
-	// Display List
-	estrellaDavid = glGenLists(1);
+	glClearColor(0.0f, 0.0f, 0.3f, 1.0f);
+}
 
-	glNewList(estrellaDavid, GL_COMPILE);
-	glPushAttrib(GL_CURRENT_BIT);
-	glBegin(GL_TRIANGLE_STRIP);
-	for (int i = 0; i < 4; i++) {
-		double angle = ((i * 2) % 6) * M_PI / 3 + M_PI / 2;
-		glVertex3f(1.0 * cos(angle), 1.0 * sin(angle), 0.0);
-		glVertex3f(0.7 * cos(angle), 0.7 * sin(angle), 0.0);
+//! Cuenta los frames por segundo
+void FPS()
+{
+	static int antes = glutGet(GLUT_ELAPSED_TIME);
+	int ahora = glutGet(GLUT_ELAPSED_TIME);
+	int ttrans = ahora - antes;
+	static int fotogramas = 0;
+
+	fotogramas++;
+
+	if (ttrans >= 1000) {
+		// Ponemos los fps en el titulo de la ventana
+		stringstream titulo;
+		titulo << "FPS= " << fotogramas;
+		glutSetWindowTitle(titulo.str().c_str());
+		fotogramas = 0;
+		antes = ahora;
 	}
-	glEnd();
-	glBegin(GL_TRIANGLE_STRIP);
-	for (int i = 0; i < 4; i++) {
-		double angle = (((i * 2) + 1) % 6) * M_PI / 3 + M_PI / 2;
-		glVertex3f(1.0 * cos(angle), 1.0 * sin(angle), 0.0);
-		glVertex3f(0.7 * cos(angle), 0.7 * sin(angle), 0.0);
-	}
-	glEnd();
-
-
-
-	glEndList();
-
-
-
-
-
 }
 
 //! Callback de dibujo
 void display()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT);
 
-
+	// Trabajo con la MODELVIEW
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-	gluLookAt(/*posicion de la camara */3, 4, 5,
-		/*punto de interes*/0, 0, 0,
-		/*vertical de la camara*/0, 1, 0);
+	gluLookAt(2, 3, 4, 0, 0, 0, 0, 1, 0);
 
-	for (int i = 0; i < 6; i++) {
-		glColor3f(0, 0 + 0.25 * i, 1 - 0.25 * i);
-		glPushMatrix();
-		glRotatef(30 * i, 0, 1, 0);
-		glCallList(estrellaDavid);
-		glPopMatrix();
-	}
-	glColor3f(0, 0, 1);
-	glutWireSphere(1, 30, 30);
+	// Geometria
+	glColor3f(1, 1, 0);
+	glPushMatrix();
+	glTranslatef(0.5, 0, 0);
+	glRotatef(angulo, 0, 1, 0);
+	glutWireTeapot(0.5);
+	glPopMatrix();
 
-	glFlush();
+	glColor3f(0, 1, 0);
+	glTranslatef(-0.5, 0, 0);
+	glRotatef(angulo / 2, 0, 1, 0);
+	glutWireTeapot(0.5);
+
+	glutSwapBuffers();
+
+	FPS();
 }
 
 //! Callback de redimensionamiento
 void reshape(GLint w, GLint h)
 {
+	// Establer el marco (viewport)
 	glViewport(0, 0, w, h);
-	float ar = (float)w / h;
+
+	// Construir la PROJECTION
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
-	float distancia = sqrt(pow(3, 2) + pow(4, 2) + pow(5, 2));
-	float fovy = (asin(2.0 / distancia)) * 180 / M_PI;
-	gluPerspective(fovy, ar, 1, 100);
+	gluPerspective(20, (float)w / h, 0.1, 20);
+}
+//! Callback de actualizacion
+void onIdle()
+{
+	// Actualizacion de las variables temporales
+	//angulo += 0.1;  // sin control de tiempo
 
+	// Controlando el tiempo transcurrido
+	static const float vueltasXsegundo = 3;
+	static int antes = glutGet(GLUT_ELAPSED_TIME);
+	int ahora = glutGet(GLUT_ELAPSED_TIME);
+	float ttrans = (ahora - antes) / 1000.0f;
+	angulo += vueltasXsegundo * 360 * ttrans;
+
+	antes = ahora;
+
+	// Encolar el evento de dibujo
+	glutPostRedisplay();
+}
+
+//! Callback de cuenta atras
+void onTimer(int tiempo)
+{
+	glutTimerFunc(tiempo, onTimer, tiempo);
+	onIdle();
 }
 
 //! Programa principal
@@ -101,15 +120,16 @@ int main(int argc, char** argv)
 {
 	// Inicializaciones
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
-	glutInitWindowSize(600, 600);
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+	glutInitWindowSize(600, 400);
 	glutCreateWindow(PROYECTO);
-
 	init();
 
 	// Registro de callbacks	
 	glutDisplayFunc(display);
 	glutReshapeFunc(reshape);
+	//glutIdleFunc(onIdle);
+	glutTimerFunc(1000 / TASAFPS, onTimer, 1000 / TASAFPS);
 
 	// Bucle de atencion a eventos
 	glutMainLoop();

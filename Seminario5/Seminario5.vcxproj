@@ -75,7 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <IncludePath>C:\Users\alber\source\Repos\DT3MP01\Seminarios_ISGI_2021\codebase\GL;$(IncludePath)</IncludePath>
+    <IncludePath>C:\Users\alber\source\Repos\DT3MP01\Seminarios_ISGI_2021\codebase\GL;C:\Users\alber\source\Repos\DT3MP01\Seminarios_ISGI_2021\codebase;$(IncludePath)</IncludePath>
     <LibraryPath>C:\Users\alber\source\Repos\DT3MP01\Seminarios_ISGI_2021\codebase\lib;$(LibraryPath)</LibraryPath>
     <OutDir>$(ProjectDir)</OutDir>
   </PropertyGroup>

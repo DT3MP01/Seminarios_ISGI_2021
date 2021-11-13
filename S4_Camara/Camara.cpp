@@ -61,7 +61,7 @@ void init()
 //! Callback de dibujo
 void display()
 {
-	glClear(GL_COLOR_BUFFER_BIT| GL_DEPTH_BUFFER_BIT);
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
 
 	glMatrixMode(GL_MODELVIEW);
@@ -71,14 +71,14 @@ void display()
 		/*vertical de la camara*/0, 1, 0);
 
 	for (int i = 0; i < 6; i++) {
-		glColor3f(0, 0 + 0.25 * i, 1- 0.25 * i);
+		glColor3f(0, 0 + 0.25 * i, 1 - 0.25 * i);
 		glPushMatrix();
-		glRotatef(30*i, 0, 1, 0);
+		glRotatef(30 * i, 0, 1, 0);
 		glCallList(estrellaDavid);
 		glPopMatrix();
 	}
 	glColor3f(0, 0, 1);
-	glutWireSphere(1,30,30);
+	glutWireSphere(1, 30, 30);
 
 	glFlush();
 }
@@ -87,7 +87,7 @@ void display()
 void reshape(GLint w, GLint h)
 {
 	glViewport(0, 0, w, h);
-	float ar = (float) w / h;
+	float ar = (float)w / h;
 	glMatrixMode(GL_PROJECTION);
 	glLoadIdentity();
 	float distancia = sqrt(pow(3, 2) + pow(4, 2) + pow(5, 2));
@@ -101,7 +101,7 @@ int main(int argc, char** argv)
 {
 	// Inicializaciones
 	glutInit(&argc, argv);
-	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB| GLUT_DEPTH);
+	glutInitDisplayMode(GLUT_SINGLE | GLUT_RGB | GLUT_DEPTH);
 	glutInitWindowSize(600, 600);
 	glutCreateWindow(PROYECTO);
 

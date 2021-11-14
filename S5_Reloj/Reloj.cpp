@@ -25,7 +25,7 @@ static GLint estrella;
 static GLint triangulo;
 static GLint manecilla;
 static GLint circulo;
-
+static const int TASAFPS = 60;
 // Coordenadas de la cámara
 static int posCam[] = { 2, 3, 5 };
 
@@ -37,26 +37,16 @@ void draw_estrella() {
 	glBegin(GL_TRIANGLE_STRIP);
 	for (int i = 0; i < 4; i++) {
 		double angle = ((i * 2) % 6) * M_PI / 3 + M_PI / 2;
-		glVertex3f(1.0 * cos(angle), 1.0 * sin(angle), 0.0);
-		glVertex3f(0.7 * cos(angle), 0.7 * sin(angle), 0.0);
+		glVertex3f(1.0 * cosf(angle), 1.0 * sinf(angle), 0.0);
+		glVertex3f(0.7 * cosf(angle), 0.7 * sinf(angle), 0.0);
 	}
 	glEnd();
 	glBegin(GL_TRIANGLE_STRIP);
 	for (int i = 0; i < 4; i++) {
 		double angle = (((i * 2) + 1) % 6) * M_PI / 3 + M_PI / 2;
-		glVertex3f(1.0 * cos(angle), 1.0 * sin(angle), 0.0);
-		glVertex3f(0.7 * cos(angle), 0.7 * sin(angle), 0.0);
+		glVertex3f(1.0 * cosf(angle), 1.0 * sinf(angle), 0.0);
+		glVertex3f(0.7 * cosf(angle), 0.7 * sinf(angle), 0.0);
 	}
-	glEnd();
-	glEndList();
-}
-
-void draw_manecilla() {
-	manecilla = glGenLists(1);
-	glNewList(manecilla, GL_COMPILE);
-	glBegin(GL_LINES);
-	glVertex3f(0.0f, 0.7f, 0.0f);
-	glVertex3f(0.0f, 0.0f, 0.0f);
 	glEnd();
 	glEndList();
 }
@@ -96,8 +86,6 @@ void init()
 	// Estrellas de David (práctica 4)
 	draw_estrella();
 
-	// Varilla de reloj
-	draw_manecilla();
 
 	// Triangulo marcador de horas y minutos
 	draw_triangulo();
@@ -116,14 +104,12 @@ void display()
 
 	// Dibujamos la estrella de David de la práctica anterior
 	glPushMatrix();
-	float aux =(abs(sinf(seno)) / 10)+ 0.2;
-	//float angle = (90.0f + (float)anguloSec) * M_PI / 180;
-	//glTranslatef(cosf(angle), sinf(angle), 0.0);
+	float rebote =(abs(sinf(seno)) / 10)+ 0.2;
 	for (int i = 1; i <= 6; i++) {
 		glPushAttrib(GL_CURRENT_BIT);
 		glColor3f(0, 0 + 0.25 * i, 1 - 0.25 * i);
 		glPushMatrix();
-		glScalef(aux, aux, aux);
+		glScalef(rebote, rebote, rebote);
 		glRotatef(30.0f * i + rotacion, 1, 1, 1);
 		glCallList(estrella);
 		glPopMatrix();
@@ -169,7 +155,7 @@ void display()
 	glTranslatef(0.4 * cosf(angle), 0.4 * sinf(angle), 0.0);
 	glRotatef(anguloHora, 0, 0, 1);
 	glRotatef(-90, 1, 0, 0);
-	glutWireCone(0.1, 0.4, 5, 5);
+	glutSolidCone(0.1, 0.4, 5, 5);
 
 	glPopAttrib();
 	glPopMatrix();
@@ -184,10 +170,11 @@ void display()
 		if (i % 3 == 0) {
 			glScalef(1.5, 1.2, 1.5);
 			glColor3f(1, 0, 0);
+
 		}
 		else {
 			glScalef(0.8, 1, 1);
-			glColor3f(0, 1, 0);
+			glColor3f(0, 0, 1);
 		}
 		glScalef(0.1, 0.1, 0.1);
 		glCallList(triangulo);
@@ -198,13 +185,12 @@ void display()
 	glPushMatrix();
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor3f(0, 0, 0);
-	glRotatef(90, 1,0 , 0);
-	glRotatef(-20, 0, 1, 0);
+
 	glCallList(circulo);
 	glPopAttrib();
 	glPopMatrix();
 
-
+	glutWireSphere(1, 20, 20);
 
 	glutSwapBuffers();
 }
@@ -257,7 +243,7 @@ int main(int argc, char** argv)
 	std::cout << TITULO << " por Luis Alberto Alvarez Zavaleta" << std::endl;		// Mensaje por consola
 	glutDisplayFunc(display);												// Alta de la funcion de atencion a display
 	glutReshapeFunc(reshape);												// Alta de la funcion de atencion a reshape
-	glutTimerFunc(1000 / 60, onTimer, 60);									// Se encola un nuevo timer
+	glutTimerFunc(1000 / TASAFPS, onTimer, TASAFPS);									// Se encola un nuevo timer
 	glutMainLoop();															// Puesta en marcha del programa
 	return 1;
 }

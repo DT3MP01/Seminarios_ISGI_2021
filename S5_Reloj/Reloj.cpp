@@ -17,7 +17,6 @@ static float anguloSec;
 static float anguloMin;
 static float anguloHora;
 static float anguloSiempre;
-static float rotacion = 0;
 static float seno = 0.0f;
 
 // Indices de las listas de dibujo
@@ -120,7 +119,7 @@ void display()
 		glColor3f(0, 0 + 0.25 * i, 1 - 0.25 * i);
 		glPushMatrix();
 		glScalef(rebote, rebote, rebote);
-		glRotatef(30.0f * i + rotacion, 1, 1, 1);
+		glRotatef(30.0f * i + anguloSiempre, 1, 1, 1);
 		glCallList(circulo);
 		glCallList(estrella);
 		glPopMatrix();
@@ -198,14 +197,23 @@ void display()
 	}
 
 	glPushMatrix();
-	glPushAttrib(GL_CURRENT_BIT);
 
+	glPushAttrib(GL_CURRENT_BIT);
+	glPushMatrix();
 	glColor3f(0, 0, 0);
 	glRotatef(90, 1, 0, 0);
 	glScalef(0.5, 0.5, 0.5);
 	glCallList(circulo);
-	//glColor3f(1, 1, 0);
-	//glutWireSphere(1, 20, 20);
+	glPopMatrix();
+
+	glPushMatrix();
+	glScalef(0.5, 0.5, 0.5);
+	glTranslatef(cos(anguloSiempre/180* M_PI), 0, sin(anguloSiempre/180 * M_PI));
+	glRotatef(-anguloSiempre, 0, 1, 0);
+	glColor3f(cos(anguloSiempre), 0.5, 0.5);
+	glutSolidTorus(0.05, 0.1, 20, 20);
+	glPopMatrix();
+
 	glutSwapBuffers();
 }
 
@@ -234,7 +242,6 @@ void onIdle()
 
 	// Calculos para las animaciones de rebote
 	seno += 0.5f * ttrans;
-	rotacion += 1 % 360;
 	// Angulos de las manecillas
 	struct tm timeinfo;
 	time_t actual = time(0);

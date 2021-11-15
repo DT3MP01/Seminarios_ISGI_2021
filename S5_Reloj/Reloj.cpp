@@ -5,7 +5,6 @@ Autor: Luis Alberto Alvarez Zavaleta
 
 constexpr auto TITULO = "Reloj 3D";
 #define _USE_MATH_DEFINES
-#define _CRT_SECURE_NO_WARNINGS
 #include <iostream>
 #include <gl/freeglut.h>
 #include <math.h>
@@ -17,6 +16,7 @@ constexpr auto TITULO = "Reloj 3D";
 static float anguloSec;
 static float anguloMin;
 static float anguloHora;
+static float anguloSiempre;
 static float rotacion = 0;
 static float seno = 0.0f;
 
@@ -29,48 +29,56 @@ static const int TASAFPS = 60;
 // Coordenadas de la cámara
 static int posCam[] = { 2, 3, 5 };
 
-void draw_estrella() {
+void init_estrellaDavid() {
 	estrella = glGenLists(1);
-
 	glNewList(estrella, GL_COMPILE);
-	glPushAttrib(GL_CURRENT_BIT);
 	glBegin(GL_TRIANGLE_STRIP);
 	for (int i = 0; i < 4; i++) {
-		double angle = ((i * 2) % 6) * M_PI / 3 + M_PI / 2;
-		glVertex3f(1.0 * cosf(angle), 1.0 * sinf(angle), 0.0);
-		glVertex3f(0.7 * cosf(angle), 0.7 * sinf(angle), 0.0);
+		float angle = ((i * 2) % 6) * M_PI / 3 + M_PI / 2;
+		glVertex3f(1.0 * cos(angle), 1.0 * sin(angle), 0.0);
+		glVertex3f(0.7 * cos(angle), 0.7 * sin(angle), 0.0);
 	}
 	glEnd();
 	glBegin(GL_TRIANGLE_STRIP);
 	for (int i = 0; i < 4; i++) {
-		double angle = (((i * 2) + 1) % 6) * M_PI / 3 + M_PI / 2;
-		glVertex3f(1.0 * cosf(angle), 1.0 * sinf(angle), 0.0);
-		glVertex3f(0.7 * cosf(angle), 0.7 * sinf(angle), 0.0);
-	}
-	glEnd();
-	glEndList();
-}
-
-void draw_triangulo() {
-	triangulo = glGenLists(1);
-	glNewList(triangulo, GL_COMPILE);
-	glBegin(GL_TRIANGLE_STRIP);
-	for (int i = 0; i < 4; i++) {
-		double angle = ((i * 2) % 6) * M_PI / 3 + M_PI / 2;
+		float angle = (((i * 2) + 1) % 6) * M_PI / 3 + M_PI / 2;
 		glVertex3f(1.0 * cos(angle), 1.0 * sin(angle), 0.0);
 		glVertex3f(0.7 * cos(angle), 0.7 * sin(angle), 0.0);
 	}
 	glEnd();
 	glEndList();
 }
-void draw_elipse(float r, int n) {
+
+void init_manecilla() {
+	manecilla = glGenLists(1);
+	glNewList(manecilla, GL_COMPILE);
+	glBegin(GL_LINES);
+	glVertex3f(0, 0.7, 0);
+	glVertex3f(0, 0, 0);
+	glEnd();
+	glEndList();
+}
+
+void init_triangulo() {
+	triangulo = glGenLists(1);
+	glNewList(triangulo, GL_COMPILE);
+	glBegin(GL_TRIANGLE_STRIP);
+	for (int i = 0; i < 4; i++) {
+		float angle = ((i * 2) % 6) * M_PI / 3 + M_PI / 2;
+		glVertex3f(1.0 * cos(angle), 1.0 * sin(angle), 0.0);
+		glVertex3f(0.7 * cos(angle), 0.7 * sin(angle), 0.0);
+	}
+	glEnd();
+	glEndList();
+}
+void init_circulo(float r, int n) {
 	circulo = glGenLists(1);
 	glNewList(circulo, GL_COMPILE);
 	glBegin(GL_LINE_LOOP);
 	for (int i = 0; i < n; i++) {
 		float aux = 2.0f * M_PI * ((float)i) / ((float)n);
-		float x = r * cosf(aux);
-		float y = r * sinf(aux);
+		float x = r * cos(aux);
+		float y = r * sin(aux);
 		glVertex2f(x, y);
 	}
 	glEnd();
@@ -84,13 +92,15 @@ void init()
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 
 	// Estrellas de David (práctica 4)
-	draw_estrella();
+	init_estrellaDavid();
 
 
 	// Triangulo marcador de horas y minutos
-	draw_triangulo();
+	init_triangulo();
+	init_manecilla();
 
-	draw_elipse(1,100);
+	init_circulo(1,100);
+
 }
 
 void display()
@@ -98,100 +108,104 @@ void display()
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		// Borra la pantalla
 	glMatrixMode(GL_MODELVIEW);								// Selecciona la modelview
 	glLoadIdentity();										// Carga la matriz identidad
-
-	// Colocamos la cámara
+	float angle;
+	// Cámara
 	gluLookAt(posCam[0], posCam[1], posCam[2], 0, 0, 0, 0, 1, 0);
 
-	// Dibujamos la estrella de David de la práctica anterior
+	// Estrella de David 
 	glPushMatrix();
-	float rebote =(abs(sinf(seno)) / 10)+ 0.2;
+	float rebote =(abs(sin(seno)) / 10)+ 0.2;
 	for (int i = 1; i <= 6; i++) {
 		glPushAttrib(GL_CURRENT_BIT);
 		glColor3f(0, 0 + 0.25 * i, 1 - 0.25 * i);
 		glPushMatrix();
 		glScalef(rebote, rebote, rebote);
 		glRotatef(30.0f * i + rotacion, 1, 1, 1);
+		glCallList(circulo);
 		glCallList(estrella);
 		glPopMatrix();
 		glPopAttrib();
 	}
 	glPopMatrix();
 
-	// Dibujamos las manecillas que marcan las horas, minutos y segundos
-	// Manecilla que marca los segundos
-
+	// Manecilla para los segundos
 	glPushMatrix();
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor3f(1, 0, 0);
-	glScalef(1, 1, 1);
-	float angle = (90.0f + (float)anguloSec) * M_PI / 180;
-	glTranslatef(0.4*cosf(angle),0.4 *sinf(angle), 0.0);
+	angle = (90.0 + anguloSec) * M_PI / 180;
+	glTranslatef(0.4 * cos(angle), 0.4 * sin(angle), 0.0);
 	glRotatef(anguloSec, 0, 0, 1);
-	glRotatef(2*anguloSec, 0, 1, 0);
-	glRotatef(-90, 1,0,0);
-	glutWireCone(0.1, 0.4, 5, 5);
+	glRotatef(-90, 1, 0, 0);
+	glutSolidCone(0.02, 0.6, 5, 10);
 	glPopAttrib();
 	glPopMatrix();
 
-	// Manecilla que marca los minutos
+	// Manecilla para los minutos , rota con los segundos
 	glPushMatrix();
 	glPushAttrib(GL_CURRENT_BIT);
-	glColor3f(1, 0, 0);
+	glColor3f(0, 0, 1);
 	glScalef(1, 1, 1);
-	angle = (90.0f + (float)anguloMin) * M_PI / 180;
-	glTranslatef(0.4 * cosf(angle), 0.4 * sinf(angle), 0.0);
+	angle = (90.0 + anguloMin) * M_PI / 180;
+	glTranslatef(0.3 * cos(angle), 0.3 * sin(angle), 0.0);
 	glRotatef(anguloMin, 0, 0, 1);
+	glRotatef(2 * anguloSec, 0, 1, 0);
 	glRotatef(-90, 1, 0, 0);
-	glutWireCone(0.1, 0.4, 5, 5);
+	glutWireCone(0.1, 0.6, 5, 5);
 	glPopAttrib();
 	glPopMatrix();
 
 	// Manecilla que marca las horas
 	glPushMatrix();
 	glPushAttrib(GL_CURRENT_BIT);
-	glColor3f(1, 0, 0);
+	glColor3f(0, 1, 0);
 	glScalef(1, 1, 1);
-	angle = (90.0f + (float)anguloHora) * M_PI / 180;
-	glTranslatef(0.4 * cosf(angle), 0.4 * sinf(angle), 0.0);
+	angle = (90.0 + anguloHora) * M_PI / 180;
+	glTranslatef(0.4 * cos(angle), 0.4 * sin(angle), 0.0);
 	glRotatef(anguloHora, 0, 0, 1);
 	glRotatef(-90, 1, 0, 0);
-	glutSolidCone(0.1, 0.4, 5, 5);
-
+	glutSolidCone(0.1, 0.4, 25, 25);
 	glPopAttrib();
 	glPopMatrix();
 
-	// Dibujamos los triangulos que marcan las horas y los minutos
-	for (int i = 0; i < 12; i++) {
+	// Triangulos y lineas que marcan horas y minutos
+	for (int i = 0; i < 60; i++) {
 		glPushMatrix();
-		float angle = i * 30 * M_PI / 180.f;
-		glTranslatef(cosf(angle), sinf(angle), 0.0f);
-		glRotatef(90.0f + i * 30, 0.0f, 0.0f, 1.0f);
+		float angle = i * 6.0 * M_PI / 180.0;
+		glTranslatef(cos(angle), sin(angle), 0.0f);
+		glRotatef(90.0f + i * 6, 0.0f, 0.0f, 1.0f);
 		glPushAttrib(GL_CURRENT_BIT);
-		if (i % 3 == 0) {
-			glScalef(1.5, 1.2, 1.5);
-			glColor3f(1, 0, 0);
-
+		if (i % 5 == 0) {
+			if (i % 15 == 0) {
+				glScalef(1.5, 1.2, 1.5);
+				glColor3f(1, 0, 0);
+			}
+			else {
+				glColor3f(0, 0, 1);
+			}
+			glScalef(0.08, 0.1, 0.1);
+			glCallList(triangulo);
+			glPopMatrix();
+			glPopAttrib();
 		}
 		else {
-			glScalef(0.8, 1, 1);
-			glColor3f(0, 0, 1);
+			glScalef(0.1, 0.1, 0.1);
+			glColor3f(0, 0, 0);
+			glCallList(manecilla);
+			glPopMatrix();
+			glPopAttrib();
 		}
-		glScalef(0.1, 0.1, 0.1);
-		glCallList(triangulo);
-		glPopMatrix();
-		glPopAttrib();
+
 	}
 
 	glPushMatrix();
 	glPushAttrib(GL_CURRENT_BIT);
+
 	glColor3f(0, 0, 0);
-
+	glRotatef(90, 1, 0, 0);
+	glScalef(0.5, 0.5, 0.5);
 	glCallList(circulo);
-	glPopAttrib();
-	glPopMatrix();
-
-	glutWireSphere(1, 20, 20);
-
+	//glColor3f(1, 1, 0);
+	//glutWireSphere(1, 20, 20);
 	glutSwapBuffers();
 }
 
@@ -204,33 +218,39 @@ void reshape(GLint w, GLint h)
 	glLoadIdentity();
 
 
-	double distancia = sqrt(pow(posCam[0], 2) + pow(posCam[1], 2) + pow(posCam[2], 2));
-	double fovy = (asin(2.0 / distancia)) * 180 / M_PI;
+	float distancia = sqrt(pow(posCam[0], 2) + pow(posCam[1], 2) + pow(posCam[2], 2));
+	float fovy = (asin(2.0 / distancia)) * 180 / M_PI;
 	gluPerspective(fovy, razon, 1, 10);
 }
-
-void onTimer(int valor)
+void onIdle()
 {
 	// Variables temporales
-	static int antes = 0;
-	int ahora, tiempo_transcurrido;
-	ahora = glutGet(GLUT_ELAPSED_TIME);		// Tiempo transcurrido desde el inicio
-	tiempo_transcurrido = ahora - antes;	// Tiempo transcurrido desde antes msg
+	static const float vueltasXsegundo = 1/60.0f;
+	static int antes = glutGet(GLUT_ELAPSED_TIME);
+	int ahora = glutGet(GLUT_ELAPSED_TIME);
+	float ttrans = (ahora - antes) / 1000.0f;
+	anguloSiempre += vueltasXsegundo * 360 * ttrans;
 	antes = ahora;
 
-	// Calculos para las animaciones
-	seno += 0.5f * tiempo_transcurrido / 1000.0f;
+	// Calculos para las animaciones de rebote
+	seno += 0.5f * ttrans;
 	rotacion += 1 % 360;
-
 	// Angulos de las manecillas
-	const std::time_t now = std::time(nullptr);
-	const std::tm calendar_time = *std::localtime(std::addressof(now));
-	anguloSec = 360.0f - (calendar_time.tm_sec * 6);
-	anguloMin = 360.0f - (calendar_time.tm_min * 6);
-	anguloHora = 360.0f - (calendar_time.tm_hour * 30);
+	struct tm timeinfo;
+	time_t actual = time(0);
+	localtime_s(&timeinfo, &actual);
+	//sacar tiempos
+	anguloSec = 360.0f - (timeinfo.tm_sec * 6);
+	anguloMin = 360.0f - (timeinfo.tm_min * 6);
+	anguloHora = 360.0f - (timeinfo.tm_hour * 30);
 
-	glutTimerFunc(1000 / 60, onTimer, 60);
 	glutPostRedisplay();
+}
+
+void onTimer(int tiempo)
+{
+	glutTimerFunc(tiempo, onTimer, tiempo);
+	onIdle();
 }
 
 int main(int argc, char** argv)
@@ -239,11 +259,12 @@ int main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);				// Alta de buffers a usar
 	glutInitWindowSize(400, 400);											// Tamanyo inicial de la ventana
 	glutCreateWindow(TITULO);												// Creacion de la ventana con su titulo
-	init();																	// Inicializacion propia
+	init();		
+
+	// Inicializacion propia
 	std::cout << TITULO << " por Luis Alberto Alvarez Zavaleta" << std::endl;		// Mensaje por consola
 	glutDisplayFunc(display);												// Alta de la funcion de atencion a display
 	glutReshapeFunc(reshape);												// Alta de la funcion de atencion a reshape
 	glutTimerFunc(1000 / TASAFPS, onTimer, TASAFPS);									// Se encola un nuevo timer
 	glutMainLoop();															// Puesta en marcha del programa
-	return 1;
 }

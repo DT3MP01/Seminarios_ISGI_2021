@@ -69,7 +69,7 @@ void reshape(GLint w, GLint h)
 	glLoadIdentity();
 	//Camara ortografica
 	if (ar > 1) {
-		glOrtho(-2 * ar, 2 * ar, -2, 2, -20, 20);
+		glOrtho(-2.0 * ar, 2.0 * ar, -2, 2, -20, 20);
 
 	}
 	else {

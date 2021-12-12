@@ -3,7 +3,7 @@ ISGI:: Reloj 3D
 Autor: Luis Alberto Alvarez Zavaleta
 ***************************************************/
 
-constexpr auto TITULO = "Reloj 3D";
+#define TITULO "Reloj 3D"
 #define _USE_MATH_DEFINES
 #include <iostream>
 #include <gl/freeglut.h>
@@ -16,16 +16,17 @@ constexpr auto TITULO = "Reloj 3D";
 static float anguloSec;
 static float anguloMin;
 static float anguloHora;
-static float anguloSiempre;
-static float seno = 0.0f;
+static float anguloConstante;
+static float seno = 0.0;
 
 // Indices de las listas de dibujo
 static GLint estrella;
 static GLint triangulo;
-static GLint manecilla;
+static GLint minutero;
 static GLint circulo;
+// FPS
 static const int TASAFPS = 60;
-// Coordenadas de la cámara
+// Posición de la cámara
 static int posCam[] = { 2, 3, 5 };
 
 void init_estrellaDavid() {
@@ -48,9 +49,9 @@ void init_estrellaDavid() {
 	glEndList();
 }
 
-void init_manecilla() {
-	manecilla = glGenLists(1);
-	glNewList(manecilla, GL_COMPILE);
+void init_minutero() {
+	minutero = glGenLists(1);
+	glNewList(minutero, GL_COMPILE);
 	glBegin(GL_LINES);
 	glVertex3f(0, 0.7, 0);
 	glVertex3f(0, 0, 0);
@@ -87,16 +88,14 @@ void init_circulo(float r, int n) {
 void init()
 {
 	glEnable(GL_DEPTH_TEST);
-	glLineWidth(2);	// Grosor de las líneas
+	glLineWidth(2);
 	glClearColor(1.0, 1.0, 1.0, 1.0);
 
 	// Estrellas de David (práctica 4)
 	init_estrellaDavid();
-
-
 	// Triangulo marcador de horas y minutos
 	init_triangulo();
-	init_manecilla();
+	init_minutero();
 
 	init_circulo(1,100);
 
@@ -104,9 +103,9 @@ void init()
 
 void display()
 {
-	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		// Borra la pantalla
-	glMatrixMode(GL_MODELVIEW);								// Selecciona la modelview
-	glLoadIdentity();										// Carga la matriz identidad
+	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);		
+	glMatrixMode(GL_MODELVIEW);								
+	glLoadIdentity();										
 	float angle;
 	// Cámara
 	gluLookAt(posCam[0], posCam[1], posCam[2], 0, 0, 0, 0, 1, 0);
@@ -119,7 +118,7 @@ void display()
 		glColor3f(0, 0 + 0.25 * i, 1 - 0.25 * i);
 		glPushMatrix();
 		glScalef(rebote, rebote, rebote);
-		glRotatef(30.0f * i + anguloSiempre, 1, 1, 1);
+		glRotatef(30.0f * i + anguloConstante, 1, 1, 1);
 		glCallList(circulo);
 		glCallList(estrella);
 		glPopMatrix();
@@ -127,7 +126,7 @@ void display()
 	}
 	glPopMatrix();
 
-	// Manecilla para los segundos
+	// minutero para los segundos
 	glPushMatrix();
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor3f(1, 0, 0);
@@ -139,7 +138,7 @@ void display()
 	glPopAttrib();
 	glPopMatrix();
 
-	// Manecilla para los minutos , rota con los segundos
+	// minutero para los minutos , rota con los segundos
 	glPushMatrix();
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor3f(0, 0, 1);
@@ -153,7 +152,7 @@ void display()
 	glPopAttrib();
 	glPopMatrix();
 
-	// Manecilla que marca las horas
+	// minutero que marca las horas
 	glPushMatrix();
 	glPushAttrib(GL_CURRENT_BIT);
 	glColor3f(0, 1, 0);
@@ -162,7 +161,9 @@ void display()
 	glTranslatef(0.4 * cos(angle), 0.4 * sin(angle), 0.0);
 	glRotatef(anguloHora, 0, 0, 1);
 	glRotatef(-90, 1, 0, 0);
+	glPushMatrix();
 	glutSolidCone(0.1, 0.4, 25, 25);
+	glPopMatrix();
 	glPopAttrib();
 	glPopMatrix();
 
@@ -189,7 +190,7 @@ void display()
 		else {
 			glScalef(0.1, 0.1, 0.1);
 			glColor3f(0, 0, 0);
-			glCallList(manecilla);
+			glCallList(minutero);
 			glPopMatrix();
 			glPopAttrib();
 		}
@@ -197,7 +198,7 @@ void display()
 	}
 
 	glPushMatrix();
-
+	// Toroide y circulo
 	glPushAttrib(GL_CURRENT_BIT);
 	glPushMatrix();
 	glColor3f(0, 0, 0);
@@ -205,14 +206,14 @@ void display()
 	glScalef(0.5, 0.5, 0.5);
 	glCallList(circulo);
 	glPopMatrix();
-
 	glPushMatrix();
 	glScalef(0.5, 0.5, 0.5);
-	glTranslatef(cos(anguloSiempre/180* M_PI), 0, sin(anguloSiempre/180 * M_PI));
-	glRotatef(-anguloSiempre, 0, 1, 0);
-	glColor3f(cos(anguloSiempre), 0.5, 0.5);
+	glTranslatef(cos(anguloConstante/180* M_PI), 0, sin(anguloConstante/180 * M_PI));
+	glRotatef(-anguloConstante, 0, 1, 0);
+	glColor3f(cos(anguloConstante), 0.5, 0.5);
 	glutSolidTorus(0.05, 0.1, 20, 20);
 	glPopMatrix();
+	glPopAttrib();
 
 	glutSwapBuffers();
 }
@@ -237,16 +238,15 @@ void onIdle()
 	static int antes = glutGet(GLUT_ELAPSED_TIME);
 	int ahora = glutGet(GLUT_ELAPSED_TIME);
 	float ttrans = (ahora - antes) / 1000.0f;
-	anguloSiempre += vueltasXsegundo * 360 * ttrans;
-	antes = ahora;
 
+	antes = ahora;
 	// Calculos para las animaciones de rebote
 	seno += 0.5f * ttrans;
-	// Angulos de las manecillas
+	anguloConstante += vueltasXsegundo * 360 * ttrans;
+	// Rotaciones de  de los minuteros
 	struct tm timeinfo;
 	time_t actual = time(0);
 	localtime_s(&timeinfo, &actual);
-	//sacar tiempos
 	anguloSec = 360.0f - (timeinfo.tm_sec * 6);
 	anguloMin = 360.0f - (timeinfo.tm_min * 6);
 	anguloHora = 360.0f - (timeinfo.tm_hour * 30);
@@ -262,16 +262,19 @@ void onTimer(int tiempo)
 
 int main(int argc, char** argv)
 {
-	glutInit(&argc, argv);													// Inicializacion de GLUT
-	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);				// Alta de buffers a usar
-	glutInitWindowSize(400, 400);											// Tamanyo inicial de la ventana
-	glutCreateWindow(TITULO);												// Creacion de la ventana con su titulo
+	// Inicializaciones
+	glutInit(&argc, argv);													
+	glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB | GLUT_DEPTH);				
+	glutInitWindowSize(600, 600);											
+	glutCreateWindow(TITULO);											
 	init();		
 
-	// Inicializacion propia
-	std::cout << TITULO << " por Luis Alberto Alvarez Zavaleta" << std::endl;		// Mensaje por consola
-	glutDisplayFunc(display);												// Alta de la funcion de atencion a display
-	glutReshapeFunc(reshape);												// Alta de la funcion de atencion a reshape
-	glutTimerFunc(1000 / TASAFPS, onTimer, TASAFPS);									// Se encola un nuevo timer
-	glutMainLoop();															// Puesta en marcha del programa
+	// Inicializacion
+	std::cout << TITULO << " por Luis Alberto Alvarez Zavaleta" << std::endl;		
+	// Registro de callbacks
+	glutDisplayFunc(display);												
+	glutReshapeFunc(reshape);												
+	glutTimerFunc(1000 / TASAFPS, onTimer, TASAFPS);
+	// Bucle de atencion a eventos
+	glutMainLoop();															
 }

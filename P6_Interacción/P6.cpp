@@ -50,25 +50,19 @@ void init()
 {
 	glClearColor(0, 0, 0, 1);
 
-
-
 	control_luces();
-
-
-
-
 
 	// Caracteristicas del render
 	glEnable(GL_DEPTH_TEST);
 
 }
 
-float funcion_trazado(float x, float amplitud, float periodo) {
-	return amplitud * sin((x * 2 * (float)M_PI )/ periodo);
+float funcion_trazado(float u, float amplitud, float periodo) {
+	return amplitud * sin((u * 2 * (float)M_PI )/ periodo);
 }
 
-float derivada_trazado(float x, float amplitud, float periodo) {
-	return 2 * (float)M_PI * amplitud /(periodo *  cos(x * 2 * (float)M_PI / periodo) / periodo);
+float derivada_trazado(float u, float amplitud, float periodo) {
+	return (2 * (float)M_PI * amplitud /periodo) * cos(u * 2 * (float)M_PI / periodo);
 }
 
 void control_luces() {
@@ -84,7 +78,7 @@ void control_luces() {
 
 	glEnable(GL_LIGHT0);
 
-	float ambiental1[] = { 1,1,1 };
+	float ambiental1[] = { 0.5,0.5,0.5 };
 	float difusa1[] = { 1,1,1 };
 	float especular1[] = { 0.3,0.3,0.3 };
 	glLightfv(GL_LIGHT1, GL_AMBIENT, ambiental1);
@@ -92,8 +86,8 @@ void control_luces() {
 	glLightfv(GL_LIGHT1, GL_SPECULAR, especular1);
 	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 25);
 	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 20);
-	GLfloat posicion1[] = { 0,0.7,0,1 };
-	GLfloat direccion1[] = { 0.2,-0.7,-1 };
+	GLfloat posicion1[] = { 0,0.7,0, 1 };
+	GLfloat direccion1[] = { 0.1,-0.7,-1};
 	glLightfv(GL_LIGHT1, GL_POSITION, posicion1);
 	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, direccion1);
 
@@ -105,7 +99,13 @@ void control_luces() {
 }
 
 void gen_circuito() {
+	glPushAttrib(GL_CURRENT_BIT);
+	glColor3f(1, 1, 1);
+	glPushMatrix();
 
+	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, sueloMdifuso);
+	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, sueloMspecular);
+	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 3);
 	//GLfloat v0[3] = { 0,0,5 }, v1[3] = { 20,0,5 }, v2[3] = { 20,0,-5 }, v3[3] = { 0,0,-5 };
 	//glPolygonMode(GL_FRONT, GL_LINE);
 	//quad(v0, v1, v2, v3, 10, 5);
@@ -127,9 +127,7 @@ void gen_circuito() {
 		v2[2] =  f_x + vector_n[1] * anchura/2 ;
 		v1[0] = ( (float)i + longitud )  ;
 		v1[2] =  f_x - vector_n[1] * anchura/2 ;
-		glMaterialfv(GL_BACK, GL_DIFFUSE, sueloMdifuso);
-		glMaterialfv(GL_BACK, GL_SPECULAR, sueloMspecular);
-		glMaterialf(GL_BACK, GL_SHININESS, 3);
+
 		quad(v0, v1, v2, v3, 30, 30);
 
 
@@ -180,11 +178,11 @@ void onSpecialKey(int specialKey, int x, int y)
 		break;
 	case GLUT_KEY_RIGHT:
 		
-		 direccion[2] += rad(0.25);
+		 direccion[2] += rad(1);
 		
 		break;
 	case GLUT_KEY_LEFT:
-			direccion[2] -= rad(0.25);
+			direccion[2] -= rad(1);
 		break;
 	default:
 		break;

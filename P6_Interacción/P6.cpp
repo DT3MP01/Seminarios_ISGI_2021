@@ -40,15 +40,14 @@ static int inicio_farolas[4] = { distancia_farolas, distancia_farolas * 2 , dist
 float cap_w = 960;
 float cap_h = 540;
 // Giro dinamico
-static GLfloat sueloMdifuso[3] = { 0.8,0.8,0.8 };
-static GLfloat sueloMspecular[3] = { 0.3,0.3,0.3 };
+static GLfloat materialDIF[] = { 0.8,0.8,0.8,1.0 };
+static GLfloat materialSPE[] = { 0.3,0.3,0.3,1.0 };
 
 void control_luces();
 
 
 void init()
 {
-	glClearColor(0, 0, 0, 1);
 
 	control_luces();
 
@@ -78,16 +77,16 @@ void control_luces() {
 
 	glEnable(GL_LIGHT0);
 
-	float ambiental1[] = { 0.5,0.5,0.5 };
-	float difusa1[] = { 1,1,1 };
-	float especular1[] = { 0.3,0.3,0.3 };
+	float ambiental1[] = { 0.5,0.5,0.5,1.0 };
+	float difusa1[] = { 1,1,1,1.0 };
+	float especular1[] = { 0.3,0.3,0.3,1.0 };
 	glLightfv(GL_LIGHT1, GL_AMBIENT, ambiental1);
 	glLightfv(GL_LIGHT1, GL_DIFFUSE, difusa1);
 	glLightfv(GL_LIGHT1, GL_SPECULAR, especular1);
 	glLightf(GL_LIGHT1, GL_SPOT_CUTOFF, 25);
 	glLightf(GL_LIGHT1, GL_SPOT_EXPONENT, 20);
 	GLfloat posicion1[] = { 0,0.7,0, 1 };
-	GLfloat direccion1[] = { 0.1,-0.7,-1};
+	GLfloat direccion1[] = { 0.0,-0.5,-0.7 };
 	glLightfv(GL_LIGHT1, GL_POSITION, posicion1);
 	glLightfv(GL_LIGHT1, GL_SPOT_DIRECTION, direccion1);
 
@@ -98,14 +97,14 @@ void control_luces() {
 
 }
 
-void gen_circuito() {
-	glPushAttrib(GL_CURRENT_BIT);
-	glColor3f(1, 1, 1);
-	glPushMatrix();
 
-	glMaterialfv(GL_FRONT_AND_BACK, GL_DIFFUSE, sueloMdifuso);
-	glMaterialfv(GL_FRONT_AND_BACK, GL_SPECULAR, sueloMspecular);
-	glMaterialf(GL_FRONT_AND_BACK, GL_SHININESS, 3);
+void gen_circuito() {
+
+
+	glMaterialfv(GL_FRONT, GL_DIFFUSE, materialDIF);
+	glMaterialfv(GL_FRONT, GL_SPECULAR, materialSPE);
+	glMaterialf(GL_FRONT, GL_SHININESS, 3);
+
 	//GLfloat v0[3] = { 0,0,5 }, v1[3] = { 20,0,5 }, v2[3] = { 20,0,-5 }, v3[3] = { 0,0,-5 };
 	//glPolygonMode(GL_FRONT, GL_LINE);
 	//quad(v0, v1, v2, v3, 10, 5);
@@ -127,7 +126,7 @@ void gen_circuito() {
 		v2[2] =  f_x + vector_n[1] * anchura/2 ;
 		v1[0] = ( (float)i + longitud )  ;
 		v1[2] =  f_x - vector_n[1] * anchura/2 ;
-
+		glColor3f(1, 0, 0);
 		quad(v0, v1, v2, v3, 30, 30);
 
 
@@ -158,10 +157,15 @@ void display()
 	}
 	glPushMatrix();
 	glTranslatef(2, 1, 2);
+	glColor3f(0, 1, 1);
 	glutSolidSphere(0.5, 20, 20);
 	glPopMatrix();
 	// Generar circuito
+
+
 	gen_circuito();
+
+
 
 	glutSwapBuffers();
 }
